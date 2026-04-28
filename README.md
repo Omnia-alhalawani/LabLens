@@ -1,5 +1,4 @@
-# 🔬 LabLens — محلل التحاليل الطبية
-
+# 🔬 LabLens  
 > Serverless AI ecosystem for clinical lab report interpretation — powered by AWS & Google Gemini
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Online-brightgreen)](http://lablens-final-app.s3-website.eu-north-1.amazonaws.com/)
