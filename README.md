@@ -7,24 +7,23 @@
 ![Language](https://img.shields.io/badge/Language-Arabic%20NLP-lightgrey)
 
 ---
-
-## 📌 Overview
+##  Overview
 
 **LabLens** is a fully serverless, multi-cloud AI web application that interprets clinical laboratory reports. Users upload a photo or PDF of their lab results and receive a simplified Arabic explanation with clear 🟢 Normal / 🔴 Abnormal indicators — no medical background required.
 
 ---
 
-## ✨ Features
+## Features
 
-- 📸 Upload lab reports as **JPG, PNG, or PDF**
-- 🤖 AI-powered analysis via **Google Gemini 2.5 Flash** (multimodal vision)
-- 🌍 Results explained in **simple Arabic**
-- ⚡ **Serverless architecture** — zero idle cost
-- 🔒 **Secure** — API keys stored in environment variables, never in code
+-  Upload lab reports as **JPG, PNG, or PDF**
+-  AI-powered analysis via **Google Gemini 2.5 Flash** (multimodal vision)
+-  Results explained in **simple Arabic**
+-  **Serverless architecture** — zero idle cost
+-  **Secure** — API keys stored in environment variables, never in code
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 User (Browser)
@@ -44,37 +43,22 @@ Google Gemini 2.5 Flash API  ──►  Arabic Medical Analysis
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | HTML5 · CSS3 · Vanilla JS |
+| Frontend | HTML5 |
 | Hosting | Amazon S3 (Static Website) |
 | API Layer | AWS API Gateway (REST) |
 | Backend | AWS Lambda (Python 3.12) |
 | AI Model | Google Gemini 2.5 Flash |
 | Region | eu-north-1 (Stockholm) |
 
----
 
-## 📁 Project Structure
-
-```
-LabLens/
-├── frontend/
-│   └── index.html          # UI — upload form + results display
-├── backend/
-│   └── lambda_function.py  # AWS Lambda handler
-├── docs/
-│   ├── LabLens_Report.docx
-│   └── LabLens_Proposal.pptx
-├── .gitignore
-└── README.md
-```
 
 ---
 
-## 🚀 Deployment Guide
+##  Deployment Guide
 
 ### Prerequisites
 - AWS Account
@@ -102,16 +86,16 @@ LabLens/
 
 ---
 
-## 🔐 Security Notes
+##  Security Notes
 
-- ✅ API key stored in **Lambda Environment Variables** — never in source code
-- ✅ IAM role uses **least privilege** (only required permissions)
-- ✅ All traffic encrypted via **TLS 1.3**
-- ⚠️ This app is for **educational purposes only** — not a medical device
+-  API key stored in **Lambda Environment Variables** — never in source code
+-  IAM role uses **least privilege** (only required permissions)
+-  All traffic encrypted via **TLS 1.3**
+-  This app is for **educational purposes only** — not a medical device
 
 ---
 
-## 💰 Cost Estimate
+##  Cost Estimate
 
 | Architecture | Monthly Cost (1,000 users) |
 |-------------|---------------------------|
@@ -122,7 +106,7 @@ LabLens/
 
 ---
 
-## 🗺️ Roadmap
+##  Roadmap
 
 - [ ] Amazon Textract — better extraction from handwritten reports
 - [ ] AWS Secrets Manager — automated API key rotation
@@ -132,16 +116,16 @@ LabLens/
 
 ---
 
-## ⚠️ Disclaimer
+##  Disclaimer
 
 LabLens is for **educational and informational purposes only**. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider.
 
 ---
 
-## 👩‍💻 Author
+##  Author
 
 **Omnia Mohamed Elhalawani**
 
 ---
 
-*LabLens v1.0 — Powered by AWS & Google Gemini*
+
