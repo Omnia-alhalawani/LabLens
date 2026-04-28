@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabLens — محلل التحاليل الطبية</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a1a2e; }
+
+        header { background: #1E6FBF; color: white; padding: 24px; text-align: center; }
+        header h1 { font-size: 2rem; letter-spacing: 1px; }
+        header p { opacity: 0.85; font-size: 0.95rem; margin-top: 6px; }
+
+        .container { max-width: 780px; margin: 40px auto; padding: 0 20px; }
+
+        .card { background: white; border-radius: 14px; padding: 32px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); margin-bottom: 24px; }
+
+        .upload-area {
+            border: 2px dashed #1E6FBF; border-radius: 10px;
+            padding: 48px 20px; text-align: center; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .upload-area:hover { background: #f0f6ff; }
+        .upload-area input { display: none; }
+        .upload-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .upload-area label { color: #1E6FBF; font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+        .upload-area p { color: #999; font-size: 0.85rem; margin-top: 8px; }
+        .file-name { color: #1E6FBF; margin-top: 12px; font-size: 0.9rem; font-weight: 500; }
+
+        button {
+            background: #1E6FBF; color: white; border: none;
+            padding: 14px 32px; border-radius: 10px; font-size: 1rem;
+            cursor: pointer; width: 100%; margin-top: 16px;
+            transition: background 0.2s; font-weight: 600;
+        }
+        button:hover { background: #1558a0; }
+        button:disabled { background: #b0c4de; cursor: not-allowed; }
+
+        .loading { text-align: center; color: #1E6FBF; display: none; padding: 24px; font-size: 1rem; }
+
+        .result { display: none; }
+        .result h2 { color: #1E6FBF; margin-bottom: 16px; font-size: 1.2rem; }
+
+        .analysis-text {
+            white-space: pre-wrap; line-height: 2;
+            font-size: 1rem; background: #f8fbff;
+            padding: 20px; border-radius: 10px;
+            border-right: 4px solid #1E6FBF;
+        }
+
+        .disclaimer {
+            background: #fff8e1; border: 1px solid #f0c040;
+            border-radius: 10px; padding: 14px;
+            margin-top: 16px; color: #856404; font-size: 0.9rem;
+        }
+
+        .error {
+            background: #fff0f0; border: 1px solid #f5c6cb;
+            border-radius: 10px; padding: 14px;
+            color: #c0392b; display: none; margin-bottom: 16px;
+        }
+
+        footer { text-align: center; color: #aaa; font-size: 0.8rem; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🔬 LabLens</h1>
+    <p>محلل التحاليل الطبية الذكي — اعرف تحاليلك بالعربي البسيط</p>
+</header>
+
+<div class="container">
+    <div class="card">
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📁</div>
+            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFile(this)">
+            <label>اضغط لرفع صورة التحليل</label>
+            <p>JPG · PNG · PDF — حجم أقصى 10MB</p>
+            <div class="file-name" id="fileName"></div>
+        </div>
+        <button onclick="analyze()" id="analyzeBtn" disabled>🔍 حلل التحاليل</button>
+    </div>
+
+    <div class="error" id="errorBox"></div>
+    <div class="loading" id="loading">⏳ جاري تحليل التحاليل... استني ثواني</div>
+
+    <div class="card result" id="result">
+        <h2>📋 نتيجة التحليل</h2>
+        <div class="analysis-text" id="analysisText"></div>
+        <div class="disclaimer" id="disclaimerText"></div>
+    </div>
+</div>
+
+<footer>LabLens v1.0 — للأغراض التعليمية فقط</footer>
+
+<script>
+    let selectedFile = null;
+
+    // API Gateway URL — store this in your environment, do not hardcode secrets
+    const INVOKE_URL = 'https://hz5z07qzch.execute-api.eu-north-1.amazonaws.com';
+
+    function handleFile(input) {
+        selectedFile = input.files[0];
+        if (selectedFile) {
+            document.getElementById('fileName').textContent = '✅ ' + selectedFile.name;
+            document.getElementById('analyzeBtn').disabled = false;
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('errorBox').style.display = 'none';
+        }
+    }
+
+    async function analyze() {
+        if (!selectedFile) return;
+
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('errorBox').style.display = 'none';
+        document.getElementById('analyzeBtn').disabled = true;
+
+        const reader = new FileReader();
+
+        reader.onload = async function () {
+            const base64Image = reader.result.split(',')[1];
+
+            try {
+                const response = await fetch(`${INVOKE_URL}/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(base64Image)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'حدث خطأ في السيرفر');
+                }
+
+                document.getElementById('analysisText').textContent = data.analysis;
+                document.getElementById('disclaimerText').textContent =
+                    '⚠️ هذا التحليل استرشادي فقط ولا يغني عن زيارة الطبيب.';
+                document.getElementById('result').style.display = 'block';
+
+            } catch (err) {
+                document.getElementById('errorBox').textContent = '❌ ' + err.message;
+                document.getElementById('errorBox').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('analyzeBtn').disabled = false;
+            }
+        };
+
+        reader.readAsDataURL(selectedFile);
+    }
+</script>
+</body>
+</html>
